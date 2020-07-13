@@ -80,23 +80,30 @@ for:
       - RUN_MINGW: true
   install:
   - cmd: |-
-      echo %PATH%
-      set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
-      set PATH=C:\mingw-w64\x86_64-7.2.0-posix-seh-rt_v5-rev1;%PATH%
-      echo %PATH%
-      dir C:\mingw-w64\x86_64-7.2.0-posix-seh-rt_v5-rev1
+      C:\msys64\usr\bin\bash -lc "pacman -Syuu"
+      C:\msys64\usr\bin\bash -lc "pacman -Syuu"
+      C:\msys64\usr\bin\bash -lc "pacman --noconfirm -S mingw-w64-x86_64-gcc"
+      C:\msys64\usr\bin\bash -lc "pacman --noconfirm -S mingw-w64-x86_64-make"
+      C:\msys64\usr\bin\bash -lc "pacman --noconfirm -S mingw-w64-x86_64-freetype"
       
       mkdir Build
-      
       cd Build
-      cmake -G "MinGW Makefiles" -DBUILD_SHARED_LIBS=ON -DBUILD_SAMPLES=ON -DNO_FONT_INTERFACE_DEFAULT=ON ..
+      
+      set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
+      set PATH=C:\msys64\mingw64\bin;C:\msys64\usr\bin;%PATH%
+      
+      cmake -G "MinGW Makefiles" -DBUILD_SHARED_LIBS=ON -DBUILD_SAMPLES=ON -D CMAKE_C_COMPILER=gcc.exe -D CMAKE_CXX_COMPILER=g++.exe -D CMAKE_MAKE_PROGRAM=mingw32-make.exe  ..
+
+      set CHERE_INVOKING=yes
+      set MSYSTEM=MINGW64
 
   build_script:
   - cmd: |-
-      cmake --build . --config Debug
+      C:\msys64\usr\bin\bash -lc "mingw32-make.exe"
       
   after_build:
-  - cmd: ~
+  - cmd: |-
+      dir
   
 artifacts:
 - path: RmlUi-win64.zip
