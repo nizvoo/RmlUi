@@ -1,9 +1,13 @@
 version: build.{build}
 image: Visual Studio 2017
+matrix:
+  fast_finish: true
 environment:
   FREETYPE_VER: 2.10.1
-  CXXFLAGS: /DWIN32 /D_WINDOWS /W4 /GR /EHsc /permissive- /w44062
+  VS_CXXFLAGS: /DWIN32 /D_WINDOWS /W4 /GR /EHsc /permissive- /w44062
+  RUN_MINGW: false
   matrix:
+    - RUN_MINGW: true
     - VS_GENERATOR: Visual Studio 15 2017 Win64
       PLATFORM_NAME: win64
     - VS_GENERATOR: Visual Studio 15 2017
@@ -21,7 +25,7 @@ install:
     mkdir Build-Dynamic, Build-Static
     
     cd Build-Dynamic
-    cmake -G "%VS_GENERATOR%" -DBUILD_SHARED_LIBS=ON -DBUILD_SAMPLES=ON -DCMAKE_CXX_FLAGS="%CXXFLAGS%" ..
+    cmake -G "%VS_GENERATOR%" -DBUILD_SHARED_LIBS=ON -DBUILD_SAMPLES=ON -DCMAKE_CXX_FLAGS="%VS_CXXFLAGS%" ..
 
     cd ../Build-Static
     cmake -G "%VS_GENERATOR%" -DBUILD_SHARED_LIBS=OFF -DBUILD_SAMPLES=OFF ..
@@ -69,6 +73,28 @@ after_build:
     cp Dependencies/freetype-%FREETYPE_VER%/*.TXT Samples/Dependencies/freetype-%FREETYPE_VER%
     IF "%PLATFORM_NAME%"=="win64" 7z a RmlUi-%PLATFORM_NAME%-samples-only.zip LICENSE .\Samples\* -r -xr!src\ -x!shell\ -x!luainvaders\
     
+for:
+-
+  matrix:
+    only:
+      - RUN_MINGW: true
+  install:
+  - cmd: |-
+      set PATH=C:\mingw-w64\x86_64-7.2.0-posix-seh-rt_v5-rev1\mingw32\bin;%PATH%
+      
+      cd ..
+      mkdir Build
+      
+      cd Build
+      cmake -G "MinGW Makefiles" -DBUILD_SHARED_LIBS=ON -DBUILD_SAMPLES=ON -DNO_FONT_INTERFACE_DEFAULT=ON ..
+
+  build_script:
+  - cmd: |-
+      mingw32-make
+      
+  after_build:
+  - cmd: ~
+  
 artifacts:
 - path: RmlUi-win64.zip
 - path: RmlUi-win64-samples-only.zip
@@ -84,3 +110,4 @@ deploy:
   prerelease: false
   on:
     APPVEYOR_REPO_TAG: true
+    RUN_MINGW: false
