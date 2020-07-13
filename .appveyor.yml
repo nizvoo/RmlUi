@@ -82,9 +82,9 @@ for:
   - cmd: |-
       echo %PATH%
       set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
-      set PATH=C:\mingw-w64\x86_64-7.2.0-posix-seh-rt_v5-rev1\bin;%PATH%
+      set PATH=C:\mingw-w64\x86_64-7.2.0-posix-seh-rt_v5-rev1;%PATH%
       echo %PATH%
-      dir C:\mingw-w64\x86_64-7.2.0-posix-seh-rt_v5-rev1\bin
+      dir C:\mingw-w64\x86_64-7.2.0-posix-seh-rt_v5-rev1
       
       mkdir Build
       
@@ -93,7 +93,7 @@ for:
 
   build_script:
   - cmd: |-
-      mingw32-make
+      cmake --build . --config Debug
       
   after_build:
   - cmd: ~
