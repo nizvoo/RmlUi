@@ -84,9 +84,6 @@ for:
       C:\msys64\usr\bin\bash -lc "pacman --needed --noconfirm -S mingw-w64-x86_64-make"
       C:\msys64\usr\bin\bash -lc "pacman --needed --noconfirm -S mingw-w64-x86_64-freetype"
       C:\msys64\usr\bin\bash -lc "pacman --needed --noconfirm -S mingw-w64-x86_64-sfml"
-      C:\msys64\usr\bin\bash -lc "pacman --needed --noconfirm -S mingw-w64-x86_64-SDL2"
-      C:\msys64\usr\bin\bash -lc "pacman --needed --noconfirm -S mingw-w64-x86_64-SDL2_image"
-      C:\msys64\usr\bin\bash -lc "pacman --needed --noconfirm -S mingw-w64-x86_64-glew"
       
       mkdir Build
       cd Build
@@ -94,7 +91,7 @@ for:
       set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
       set PATH=C:\msys64\mingw64\bin;C:\msys64\usr\bin;%PATH%
       
-      cmake -G "MinGW Makefiles" -DBUILD_SHARED_LIBS=ON -DBUILD_SAMPLES=ON -D CMAKE_C_COMPILER=gcc.exe -D CMAKE_CXX_COMPILER=g++.exe -D CMAKE_MAKE_PROGRAM=mingw32-make.exe  ..
+      cmake -G "MinGW Makefiles" -DBUILD_SHARED_LIBS=ON -ENABLE_PRECOMPILED_HEADERS=OFF -DBUILD_SAMPLES=ON -DCMAKE_C_COMPILER=gcc.exe -DCMAKE_CXX_COMPILER=g++.exe -DCMAKE_MAKE_PROGRAM=mingw32-make.exe  ..
 
       set CHERE_INVOKING=yes
       set MSYSTEM=MINGW64
